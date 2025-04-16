@@ -1,16 +1,43 @@
-# This is a sample Python script.
+import pygame, playerClass
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+pygame.init()
+
+# CONSTANTS
+SIZE = WIDTH, HEIGHT = 800, 800
+SPRITE_SIZE = (150, 150)
+PLAYER_FRAMES = []
+PLAYER_FRAMES_REC = []
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+# Set up screen & clock
+screen = pygame.display.set_mode(SIZE)
+pygame.display.set_caption("Space Shooter")
+clock = pygame.time.Clock()
+
+# Load Player Spaceship Image
+player = playerClass.Player(SPRITE_SIZE, WIDTH, HEIGHT)
+
+# Game States
+game_is_running = True
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+# Start of Game Loop
+while game_is_running:
+    # Game termination condition
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            game_is_running = False
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    # Wipe Screen
+    screen.fill(0)
+
+    # Draws spaceship and enables it to follow the mouse pointer
+    player.follow_mouse(screen)
+
+
+
+
+
+    # Update Screen
+    pygame.display.flip()
+    clock.tick(60)
