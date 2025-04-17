@@ -1,13 +1,18 @@
-import pygame
+import pygame, bulletClass
+
+import bulletManager
+
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, sprite_size, screen_width, screen_height):
+    def __init__(self, screen, sprite_size, screen_width, screen_height):
         super().__init__() # Initializes Sprite class
         pygame.mouse.set_visible(False)
 
-        self.PLAYER_FRAMES = []
         self.counter = 0
+        self.screen = screen
+        self.PLAYER_FRAMES = []
         self.PLAYER_FRAMES_REC = []
+        self.BULLET_MANAGER = bulletManager.BulletManager(screen)
 
         for i in range(0, 5):
             player = pygame.image.load(f"Assets/Frames/Player/player_f{i}.gif")
@@ -20,7 +25,7 @@ class Player(pygame.sprite.Sprite):
             self.PLAYER_FRAMES_REC.append(player_rec)
 
 
-    def follow_mouse(self, screen):
+    def follow_mouse(self):
         self.counter = self.counter % len(self.PLAYER_FRAMES)
 
         mouse_pos = pygame.mouse.get_pos()
@@ -32,20 +37,29 @@ class Player(pygame.sprite.Sprite):
         if mouse_x <= player_rec.width // 2:
             mouse_x = player_rec.width // 2 # Farthest left ship can go
 
-        elif mouse_x >= screen.get_width() - player_rec.width // 2:
-            mouse_x = screen.get_width() - player_rec.width // 2 # Farthest right ship can go
+        elif mouse_x >= self.screen.get_width() - player_rec.width // 2:
+            mouse_x = self.screen.get_width() - player_rec.width // 2 # Farthest right ship can go
 
         if mouse_y <= player_rec.height // 2:
             mouse_y = player_rec.height // 2 # Farthest up ship can go
 
-        elif mouse_y >= screen.get_height() - player_rec.height // 2:
-            mouse_y = screen.get_height() - player_rec.height // 2 # Farthest down ship can go
+        elif mouse_y >= self.screen.get_height() - player_rec.height // 2:
+            mouse_y = self.screen.get_height() - player_rec.height // 2 # Farthest down ship can go
 
         # Set center position of spaceship to x and y position of mouse pointer on screen
-        self.PLAYER_FRAMES_REC[self.counter].center = (mouse_x, mouse_y)
-        # Draw image to screen
-        screen.blit(self.PLAYER_FRAMES[self.counter], self.PLAYER_FRAMES_REC[self.counter])
+        player_rec.center = (mouse_x, mouse_y)
+
+        # Draw spaceship frame to screen
+        self.screen.blit(self.PLAYER_FRAMES[self.counter], player_rec)
         self.counter += 1
 
 
+    def shoot_bullet(self):
+        self.counter = self.counter % len(self.PLAYER_FRAMES)
+
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_x = mouse_pos[0]
+        mouse_y = mouse_pos[1]
+
+        self.BULLET_MANAGER.add_bullet(mouse_x, mouse_y) # Creates a new bullet and fires it
 
