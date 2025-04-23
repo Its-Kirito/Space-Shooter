@@ -20,6 +20,13 @@ screen_clock = pygame.time.Clock()  # Controls frame rate
 player = player_module.Player(screen, PLAYER_SIZE, WIDTH, HEIGHT)
 stars_bg = [space_bg_module.Star() for _ in range(150)]
 
+pygame.mixer.music.load("Assets/Sounds/bg_music.mp3") # Load main game music
+pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.play(-1) # Loop indefinitely
+
+bg_ambient_music = pygame.mixer.Sound("Assets/Sounds/space_ambient.mp3") # Load ambient sound fx
+bg_ambient_music.play(-1) # Loop indefinitely
+
 
 # ----------------------- GAME STATES ---------------------------
 game_is_running = True
@@ -52,7 +59,7 @@ while game_is_running:
     if pygame.mouse.get_pressed()[0]:
         time_since_click = pygame.time.get_ticks() - program_start_time
 
-        if time_since_click > 150: # If more than 0.15 seconds have elapsed
+        if time_since_click > 200: # If more than 0.15 seconds have elapsed
             player.shoot_bullet() # Create an energy blast (bullet) and fire it
             program_start_time = pygame.time.get_ticks()
 

@@ -2,6 +2,11 @@ import pygame, bullet_manager_module
 
 
 class Player:
+    pygame.mixer.init()
+    ENERGY_BLAST_SOUND = pygame.mixer.Sound("Assets/Sounds/energy_blast.mp3") # Load sound fx
+    ENERGY_BLAST_SOUND.set_volume(0.2)
+
+
     def __init__(self, screen, sprite_size, screen_width, screen_height):
         # Hide the mouse cursor (since the spaceship follows it)
         pygame.mouse.set_visible(False)
@@ -70,4 +75,7 @@ class Player:
 
         # Create and fire a bullet using the bullet manager
         self.BULLET_MANAGER.add_bullet(mouse_x, mouse_y)
+
+        # Play sound of Energy Blast
+        pygame.mixer.Sound.play(Player.ENERGY_BLAST_SOUND)
 
