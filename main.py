@@ -1,4 +1,4 @@
-import pygame, player_module
+import pygame, player_module, space_bg_module
 
 # Initializes necessary pygame classes
 pygame.init()
@@ -6,6 +6,7 @@ pygame.init()
 
 # -------------------------- CONSTANTS --------------------------
 SCREEN_SIZE = WIDTH, HEIGHT = 800, 800
+SCREEN_BG_COLOUR = (0, 0, 20)
 PLAYER_SIZE = (150, 150)
 
 
@@ -17,6 +18,7 @@ screen_clock = pygame.time.Clock()  # Controls frame rate
 
 # --------------------- INITIALIZE OBJECTS ----------------------
 player = player_module.Player(screen, PLAYER_SIZE, WIDTH, HEIGHT)
+stars_bg = [space_bg_module.Star() for _ in range(150)]
 
 
 # ----------------------- GAME STATES ---------------------------
@@ -38,8 +40,13 @@ while game_is_running:
         if event.type == pygame.QUIT:
             game_is_running = False
 
-    # Wipe Screen (black background)
-    screen.fill(0)
+    # Fill entire screen (blue-black background colour)
+    screen.fill(SCREEN_BG_COLOUR)
+
+    # Create animated Space background with stars
+    for star in stars_bg:
+        star.move()
+        star.draw(screen)
 
     # Fire an energy blast (bullet) when player left clicks
     if pygame.mouse.get_pressed()[0]:
