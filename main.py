@@ -7,7 +7,6 @@ pygame.init()
 # -------------------------- CONSTANTS --------------------------
 SCREEN_SIZE = WIDTH, HEIGHT = 800, 800
 SCREEN_BG_COLOUR = (0, 0, 20)
-PLAYER_SIZE = (150, 150)
 
 
 # ------------------------ SETUP DISPLAY ------------------------
@@ -17,7 +16,7 @@ screen_clock = pygame.time.Clock()  # Controls frame rate
 
 
 # --------------------- INITIALIZE OBJECTS ----------------------
-player = player_module.Player(screen, PLAYER_SIZE, WIDTH, HEIGHT)
+player = player_module.Player(screen, WIDTH, HEIGHT)
 stars_bg = [space_bg_module.Star() for _ in range(150)]
 
 pygame.mixer.music.load("Assets/Sounds/bg_music.mp3") # Load main game music

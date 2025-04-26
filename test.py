@@ -1,56 +1,41 @@
-import pygame, playerClass
-
+import pygame
+from alien_manager_module import AlienManager
+# Initializes necessary pygame classes
 pygame.init()
 
-# CONSTANTS
-SIZE = WIDTH, HEIGHT = 800, 800
-SPRITE_SIZE = (150, 150)
-PLAYER_FRAMES = []
-PLAYER_FRAMES_REC = []
+
+# -------------------------- CONSTANTS --------------------------
+SCREEN_SIZE = WIDTH, HEIGHT = 800, 800
+SCREEN_BG_COLOUR = (0, 0, 30)
 
 
-# Set up screen & clock
-screen = pygame.display.set_mode(SIZE)
+# ------------------------ SETUP DISPLAY ------------------------
+screen = pygame.display.set_mode(SCREEN_SIZE)
 pygame.display.set_caption("Space Shooter")
-screen_clock = pygame.time.Clock()
-fire_interval = pygame.time.Clock()
+screen_clock = pygame.time.Clock()  # Controls frame rate
 
-# Load Player Spaceship Image
-player = playerClass.Player(screen, SPRITE_SIZE, WIDTH, HEIGHT)
 
-# Game States
+# ----------------------- GAME STATES ---------------------------
 game_is_running = True
 
-time_since_click = 0
-program_start_time = pygame.time.get_ticks() # time program starts
+# ----------------------- ALIEN STUFF ---------------------------
+alien_manager = AlienManager(screen)
+for x in range(0, 10):
+    alien_manager.add_alien()
 
-# Start of Game Loop
+clock = pygame.time.Clock()
+
 while game_is_running:
     # Game termination condition
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_is_running = False
 
-    # Wipe Screen
-    screen.fill(0)
+    # Fill entire screen (blue-black background colour)
+    screen.fill(SCREEN_BG_COLOUR)
 
-    if pygame.mouse.get_pressed()[0]:
-        time_since_click = pygame.time.get_ticks() - program_start_time
-
-        if time_since_click > 150:
-            player.shoot_bullet()
-            program_start_time = pygame.time.get_ticks()
+    alien_manager.update_spawned_aliens()
 
 
-
-    # Draws spaceship and enables it to follow the mouse pointer
-    player.follow_mouse()
-    player.BULLET_MANAGER.move_bullets()
-
-
-
-
-
-    # Update Screen
     pygame.display.flip()
-    screen_clock.tick(30)
+    clock.tick(30)

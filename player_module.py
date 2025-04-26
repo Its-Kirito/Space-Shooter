@@ -6,8 +6,14 @@ class Player:
     ENERGY_BLAST_SOUND = pygame.mixer.Sound("Assets/Sounds/energy_blast.mp3") # Load sound fx
     ENERGY_BLAST_SOUND.set_volume(0.2)
 
+    SHIP_FLYING_SOUND = pygame.mixer.Sound("Assets/Sounds/spaceship_flying_hum.mp3")
+    SHIP_FLYING_SOUND.set_volume(0.2)
 
-    def __init__(self, screen, sprite_size, screen_width, screen_height):
+    # Size of the player controlled spaceship
+    SIZE = (120, 120)
+
+
+    def __init__(self, screen, screen_width, screen_height):
         # Hide the mouse cursor (since the spaceship follows it)
         pygame.mouse.set_visible(False)
 
@@ -25,13 +31,16 @@ class Player:
         for i in range(0, 5):
             # Load then resize each spaceship frame
             player = pygame.image.load(f"Assets/Frames/Player/player_f{i}.gif")
-            player = pygame.transform.scale(player, sprite_size)
+            player = pygame.transform.scale(player, Player.SIZE)
 
             # Add frame and rect to respective lists
             self.PLAYER_FRAMES.append(player)
 
         self.PLAYER_RECT = self.PLAYER_FRAMES[0].get_rect()
         self.PLAYER_RECT.center = (screen_width / 2, screen_height - self.PLAYER_RECT.height)
+
+        # Creates the humming sound for spaceship
+        Player.SHIP_FLYING_SOUND.play(-1)
 
 
     def follow_mouse_pointer(self):

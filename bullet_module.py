@@ -2,7 +2,7 @@ import pygame
 
 
 class EnergyBlast:
-    BULLET_SIZE = (50, 70) # Width and height of Energy Blast (bullet) Image
+    BULLET_SIZE = (40, 60) # Width and height of Energy Blast (bullet) Image
     BULLET_SPEED = -15 # Controls how fast the bullet moves upward
 
 
