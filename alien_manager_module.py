@@ -20,8 +20,12 @@ class AlienManager:
             if alien.current_height > 800:
                 aliens_to_remove.append(alien)
 
+            # If alien was close to bullet mark it for removal
+            if alien.has_collided:
+                aliens_to_remove.append(alien)
+
         self.remove_unwanted_aliens(aliens_to_remove)  # Clean up off-screen aliens
-        print(f"Aliens Left: {len(self.alien_list)}")  # Debugging: see how many aliens are active
+
 
     def remove_unwanted_aliens(self, aliens_to_remove):
         # Remove each off-screen alien from the alien_list

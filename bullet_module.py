@@ -10,6 +10,7 @@ class EnergyBlast:
         self.FRAMES = []  # List to hold animation frames for energy blast (bullet)
         self.RECT = None  # Rectangle to track bullet's position
         self.counter = 0  # Helps cycle through animation frames
+        self.has_collided = False # Flag for checking collision with aliens
 
         # Load the energy blast frames, resize and store them
         for i in range(0, 8):

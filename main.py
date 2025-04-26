@@ -1,7 +1,10 @@
-import pygame, player_module, space_bg_module
+import random, pygame
+import player_module, space_bg_module, alien_manager_module
+
 
 # Initializes necessary pygame classes
 pygame.init()
+pygame.mixer.set_num_channels(20)
 
 
 # -------------------------- CONSTANTS --------------------------
@@ -18,6 +21,10 @@ screen_clock = pygame.time.Clock()  # Controls frame rate
 # --------------------- INITIALIZE OBJECTS ----------------------
 player = player_module.Player(screen, WIDTH, HEIGHT)
 stars_bg = [space_bg_module.Star() for _ in range(150)]
+
+alien_manager = alien_manager_module.AlienManager(screen)
+for i in range(0, random.randint(1, 10)):
+    alien_manager.add_alien()
 
 pygame.mixer.music.load("Assets/Sounds/bg_music.mp3") # Load main game music
 pygame.mixer.music.set_volume(0.2)
@@ -37,7 +44,6 @@ program_start_time = pygame.time.get_ticks()
 
 # Time since last player left-click (manages fire-rate for player)
 time_since_click = 0
-
 
 # ------------------------- MAIN LOOP ---------------------------
 while game_is_running:
@@ -65,8 +71,11 @@ while game_is_running:
     # Update player position to follow the mouse pointer
     player.follow_mouse_pointer()
 
-    # Animate and move bullets, and remove those that go off-screen
-    player.BULLET_MANAGER.update_fired_bullets()
+    # Animate and move spawned aliens, and remove those that go off-screen
+    alien_manager.update_spawned_aliens()
+
+    # Update fired bullets and remove those that hit aliens, or go off-screen
+    player.BULLET_MANAGER.update_fired_bullets(alien_manager.alien_list)
 
     # Refresh the display and set the max frame rate
     pygame.display.flip()
