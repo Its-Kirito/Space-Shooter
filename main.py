@@ -36,7 +36,7 @@ player = player_module.Player(screen, WIDTH, HEIGHT, explosion_manager)
 
 bg_stars = [space_bg_module.Star() for _ in range(150)]
 
-scoreboard = scoreboard_module.ScoreBoard()
+scoreboard = scoreboard_module.ScoreBoard(screen)
 
 alien_manager = alien_manager_module.AlienManager(screen, scoreboard, explosion_manager)
 
@@ -76,6 +76,7 @@ while game_is_running:
             player.shoot_bullet() # Create an energy blast (bullet) and fire it
             program_start_time = pygame.time.get_ticks()
 
+
     # Update player position to follow the mouse pointer
     player.follow_mouse_pointer()
 
@@ -87,6 +88,9 @@ while game_is_running:
 
     # Display explosion animations wherever objects collide
     explosion_manager.update_explosions()
+
+    # Display Player Score
+    scoreboard.display_score_bottom_left()
 
     # Refresh the display and set the max frame rate
     pygame.display.flip()
