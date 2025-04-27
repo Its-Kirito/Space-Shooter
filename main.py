@@ -1,5 +1,5 @@
 import random, pygame
-import player_module, space_bg_module, alien_manager_module
+import player_module, space_bg_module, alien_manager_module, scoreboard_module
 
 
 # Initializes necessary pygame classes
@@ -18,20 +18,23 @@ pygame.display.set_caption("Space Shooter")
 screen_clock = pygame.time.Clock()  # Controls frame rate
 
 
-# --------------------- INITIALIZE OBJECTS ----------------------
-player = player_module.Player(screen, WIDTH, HEIGHT)
-stars_bg = [space_bg_module.Star() for _ in range(150)]
-
-alien_manager = alien_manager_module.AlienManager(screen)
-for i in range(0, random.randint(1, 10)):
-    alien_manager.add_alien()
-
+# --------------------- SETUP BG MUSIC ----------------------
 pygame.mixer.music.load("Assets/Sounds/bg_music.mp3") # Load main game music
 pygame.mixer.music.set_volume(0.2)
 pygame.mixer.music.play(-1) # Loop indefinitely
 
 bg_ambient_music = pygame.mixer.Sound("Assets/Sounds/space_ambient.mp3") # Load ambient sound fx
 bg_ambient_music.play(-1) # Loop indefinitely
+
+
+# --------------------- INITIALIZE OBJECTS ----------------------
+player = player_module.Player(screen, WIDTH, HEIGHT)
+
+bg_stars = [space_bg_module.Star() for _ in range(150)]
+
+scoreboard = scoreboard_module.ScoreBoard()
+
+alien_manager = alien_manager_module.AlienManager(screen, scoreboard)
 
 
 # ----------------------- GAME STATES ---------------------------
@@ -57,7 +60,7 @@ while game_is_running:
     screen.fill(SCREEN_BG_COLOUR)
 
     # Create animated Space background with stars
-    for star in stars_bg:
+    for star in bg_stars:
         star.move()
         star.draw(screen)
 
@@ -77,6 +80,7 @@ while game_is_running:
 
     # Update fired bullets and remove those that hit aliens, or go off-screen
     player.BULLET_MANAGER.update_fired_bullets(alien_manager.alien_list)
+
 
     # Refresh the display and set the max frame rate
     pygame.display.flip()
