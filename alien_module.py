@@ -12,9 +12,9 @@ class AlienRed:
 
         self.has_collided = False # Flag for checking collision with bullets or player
 
-        self.move_left = False  # Direction flag for wiggling
+        self.move_left = random.choice([True, False])  # Direction flag for wiggling
         self.wiggle_height = random.randint(100, 350)  # Height where alien will start wiggling
-        self.expected_wiggle_time = random.randint(5, 25)  # How long (in seconds) to wiggle
+        self.expected_wiggle_time = random.randint(0, 10)  # How long (in seconds) to wiggle
         self.wiggle_start_time = 0  # Record the moment wiggling starts
         self.wiggle_time_elapsed = 0  # Track how much time has passed since started wiggling
         self.current_height = 0  # Current vertical position

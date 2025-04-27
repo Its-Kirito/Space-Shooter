@@ -4,7 +4,7 @@ import player_module, space_bg_module, alien_manager_module
 
 # Initializes necessary pygame classes
 pygame.init()
-pygame.mixer.set_num_channels(20)
+pygame.mixer.set_num_channels(20) # 20 sounds can play simultaneously
 
 
 # -------------------------- CONSTANTS --------------------------
@@ -44,6 +44,7 @@ program_start_time = pygame.time.get_ticks()
 
 # Time since last player left-click (manages fire-rate for player)
 time_since_click = 0
+
 
 # ------------------------- MAIN LOOP ---------------------------
 while game_is_running:
