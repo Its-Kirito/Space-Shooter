@@ -1,4 +1,6 @@
-import random, pygame
+import pygame
+
+import explosion_manager_module
 import player_module, space_bg_module, alien_manager_module, scoreboard_module
 
 
@@ -28,13 +30,15 @@ bg_ambient_music.play(-1) # Loop indefinitely
 
 
 # --------------------- INITIALIZE OBJECTS ----------------------
-player = player_module.Player(screen, WIDTH, HEIGHT)
+explosion_manager = explosion_manager_module.ExplosionManager(screen)
+
+player = player_module.Player(screen, WIDTH, HEIGHT, explosion_manager)
 
 bg_stars = [space_bg_module.Star() for _ in range(150)]
 
 scoreboard = scoreboard_module.ScoreBoard()
 
-alien_manager = alien_manager_module.AlienManager(screen, scoreboard)
+alien_manager = alien_manager_module.AlienManager(screen, scoreboard, explosion_manager)
 
 
 # ----------------------- GAME STATES ---------------------------
@@ -76,11 +80,13 @@ while game_is_running:
     player.follow_mouse_pointer()
 
     # Animate and move spawned aliens, and remove those that go off-screen
-    alien_manager.update_spawned_aliens()
+    alien_manager.update_spawned_aliens(player)
 
     # Update fired bullets and remove those that hit aliens, or go off-screen
     player.BULLET_MANAGER.update_fired_bullets(alien_manager.alien_list)
 
+    # Display explosion animations wherever objects collide
+    explosion_manager.update_explosions()
 
     # Refresh the display and set the max frame rate
     pygame.display.flip()

@@ -1,8 +1,8 @@
 from alien_module import AlienRed
-import random, time
+import random, time, math
 
 class AlienManager:
-    def __init__(self, screen, scoreboard):
+    def __init__(self, screen, scoreboard, explosion_manager):
         self.screen = screen
         self.alien_list = []  # List to keep track of all active aliens
         self.scoreboard = scoreboard # Will track aliens destroyed by player
@@ -12,6 +12,10 @@ class AlienManager:
         self.previous_spawn_count = 1 # Stores previous number of aliens spawned (default of 1)
 
         self.spawn_aliens() # Create aliens
+
+        # Object to create and manage explosions whenever bullet collides with alien object
+        self.explosion_manager = explosion_manager
+
 
 
     def spawn_aliens(self):
@@ -32,20 +36,30 @@ class AlienManager:
             self.alien_list.append(alien)
 
 
-    def update_spawned_aliens(self):
+    def update_spawned_aliens(self, player):
         aliens_to_remove = []  # Temporary list to track aliens that go off-screen
 
         for alien in self.alien_list:
             alien.move_down()  # Update alien position and animation
 
-            # If alien has moved off the bottom of the screen, mark it for removal
-            if alien.current_height > 800:
-                aliens_to_remove.append(alien)
+            # Check and update necessary flags if alien collides with player
+            alien_collided_with_player = self.check_alien_collision_with_player(player, alien)
 
-            # If alien was close to bullet mark it for removal
+            if alien_collided_with_player:
+                # Create explosion effect where alien collided with player
+                self.explosion_manager.create_explosion(player.RECT.center)
+                aliens_to_remove.append(alien)  # mark it for removal
+
+            # If alien collided with bullet
             if alien.has_collided:
-                aliens_to_remove.append(alien)
-                self.scoreboard.update_score_by_one() # +1 point for destroying an alien
+                aliens_to_remove.append(alien)  # mark it for removal
+                self.scoreboard.update_score_by_one() # increment player score
+
+            # If alien has moved off-screen with no collision
+            if alien.current_height > 800:
+                aliens_to_remove.append(alien)  # mark it for removal
+                self.scoreboard.reduce_score_by_one()  # decrement player score
+
 
         self.remove_unwanted_aliens(aliens_to_remove)  # Clean up off-screen aliens
 
@@ -71,3 +85,36 @@ class AlienManager:
         # (Python will automatically delete objects that have no references)
         for alien in aliens_to_remove:
             self.alien_list.remove(alien)
+
+
+    @staticmethod
+    def check_alien_collision_with_player(player, alien):
+        # Loop through all aliens on screen
+        # Get x and y coordinates of the alien
+        alien_x_pos = alien.RECT.centerx
+        alien_y_pos = alien.RECT.centery
+
+        # Player's current on-screen coordinates
+        player_x = player.RECT.centerx
+        player_y = player.RECT.centery
+
+        # If alien is not within 50px vertically of the player, return False
+        if not player_y - 50 <= alien_y_pos <= player_y + 50:
+            return False
+        # If alien is not within 40px horizontally of the player, return False
+        if not player_x - 40 <= alien_x_pos <= player_x + 40:
+            return False
+
+        alien_player_distance = AlienManager.calculate_distance(player_x, player_y, alien_x_pos,
+                                                                 alien_y_pos)
+
+        if alien_player_distance <= 40:
+            player.has_collided = True
+            alien.has_collided_with_player = True
+            return True
+
+
+
+    @staticmethod
+    def calculate_distance(x1, y1, x2, y2):
+        return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)

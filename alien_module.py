@@ -11,6 +11,7 @@ class AlienRed:
         self.counter = 0 # Frame counter for animation cycling
 
         self.has_collided = False # Flag for checking collision with bullets or player
+        self.has_collided_with_player = False # Flag for checking collision with player
 
         self.move_left = random.choice([True, False])  # Direction flag for wiggling
         self.wiggle_height = random.randint(100, 350)  # Height where alien will start wiggling

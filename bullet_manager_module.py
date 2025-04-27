@@ -1,12 +1,12 @@
-import bullet_module, math, explosion_manager_module
+import bullet_module, math
 
 class BulletManager:
-    def __init__(self, screen):
+    def __init__(self, screen, explosion_manager):
         # List to store all active (fired) bullets
         self.bullet_manager = []
 
         # Object to create and manage explosions whenever bullet collides with alien object
-        self.explosion_manager = explosion_manager_module.ExplosionManager(screen)
+        self.explosion_manager = explosion_manager
 
         # Reference to the game screen
         self.screen = screen
@@ -50,7 +50,6 @@ class BulletManager:
 
         # Clear off-screen bullets from list to conserve memory
         self._remove_hidden_bullets(hidden_bullets)
-        self.explosion_manager.update_explosions()
 
 
     def _remove_hidden_bullets(self, bullets_to_remove):
