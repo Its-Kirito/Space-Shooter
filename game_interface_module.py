@@ -13,6 +13,7 @@ class GameInterfaceManager:
         self.game_over_text_colour = (221, 71, 34)
         self.start_screen_bg = pygame.image.load("Assets/Frames/UI_BG/start_screen_bg.jpeg")
         self.game_over_screen_bg = pygame.image.load("Assets/Frames/UI_BG/game_over_bg.jpeg")
+        self.leaderboard_bg = pygame.image.load("Assets/Frames/UI_BG/leaderboard_bg.jpeg")
         self.bg_rect = self.start_screen_bg.get_rect()
 
 
@@ -30,8 +31,18 @@ class GameInterfaceManager:
             return "start_game"
 
         if leaderboard_button.is_pressed:
-            return "view_leaderboard"
+            return "display_leaderboard"
 
+
+    def display_leaderboard_screen(self, events):
+        pygame.mouse.set_visible(1)
+        self.screen.blit(self.leaderboard_bg, self.bg_rect)
+
+        main_menu_button = Button(400, 760, "Main Menu")
+        main_menu_button.display_button(self.screen, events)
+
+        if main_menu_button.is_pressed:
+            return "display_main"
 
 
     def display_game_over_screen(self, score, events):

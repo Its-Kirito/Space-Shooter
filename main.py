@@ -45,9 +45,10 @@ game_interface = game_interface_module.GameInterfaceManager(screen)
 
 # ----------------------- GAME STATES ---------------------------
 game_is_running = True
-show_start_screen = True
+display_start_screen = True
+display_leaderboard_screen = False
 play_game = False
-show_game_over_screen =  False
+display_game_over_screen =  False
 change_background_music = False
 
 
@@ -80,14 +81,18 @@ while game_is_running:
     # Fill entire screen (blue-black background colour)
     screen.fill(SCREEN_BG_COLOUR)
 
-    if show_start_screen:
+    if display_start_screen:
         command = game_interface.display_start_screen(pygame_events)
 
         if command == "start_game":
-            show_start_screen = False
+            display_start_screen = False
             play_game = True
             change_background_music = True
             background_music_file = "Assets/Sounds/bg_music.mp3"
+
+        elif command == "display_leaderboard":
+            display_start_screen = False
+            display_leaderboard_screen = True
 
     elif play_game:
         # Create animated Space background with stars
@@ -122,25 +127,34 @@ while game_is_running:
         # Show game over screen when player has collided
         if player.has_collided:
             play_game = False
-            show_game_over_screen = True
+            display_game_over_screen = True
             change_background_music = True
             background_music_file = "Assets/Sounds/game_over_music.mp3"
 
 
-    elif show_game_over_screen:
+    elif display_game_over_screen:
+        # Display game over screen and returns any command to switch screen to different interface
         command = game_interface.display_game_over_screen(scoreboard.score, pygame_events)
 
         if command == "display_main":
-            show_game_over_screen = False
-            show_start_screen = True
+            # Set necessary flags to display main starting screen for game
+            display_game_over_screen = False
+            display_start_screen = True
 
             change_background_music = True
             background_music_file = "Assets/Sounds/start_screen_music.mp3"
 
+            # Reset all game objects (Player, aliens, bullets, etc.)
             reset_all_objects()
 
-    else:
-        pass
+    elif display_leaderboard_screen:
+        # Display leaderboard screen and returns any command to switch screen to different interface
+        command = game_interface.display_leaderboard_screen(pygame_events)
+
+        if command == "display_main":
+            # Set necessary flags to display main starting screen for game
+            display_leaderboard_screen = False
+            display_start_screen = True
 
     # Change background music to match interface being displayed on screen
     if change_background_music:
@@ -153,7 +167,7 @@ while game_is_running:
         if background_music_file == "Assets/Sounds/bg_music.mp3":
             bg_ambient_music.play(-1)
 
-        change_background_music = False
+        change_background_music = False # Return state to false so it doesn't change music every frame
 
 
     # Refresh the display and set the max frame rate
