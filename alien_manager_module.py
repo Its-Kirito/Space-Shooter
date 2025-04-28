@@ -75,7 +75,7 @@ class AlienManager:
             time_elapsed = time.time() - self.start_time
 
             # Spawn next wave of aliens once 3 seconds have passed to give player time to prepare
-            if time_elapsed >= 3:
+            if time_elapsed >= 2:
                 self.spawn_aliens()
                 self.start_cooldown_timer = False
 

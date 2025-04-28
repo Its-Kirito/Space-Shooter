@@ -1,6 +1,6 @@
 import pygame
 
-import explosion_manager_module
+import explosion_manager_module, game_interface_module
 import player_module, space_bg_module, alien_manager_module, scoreboard_module
 
 
@@ -21,12 +21,12 @@ screen_clock = pygame.time.Clock()  # Controls frame rate
 
 
 # --------------------- SETUP BG MUSIC ----------------------
-pygame.mixer.music.load("Assets/Sounds/bg_music.mp3") # Load main game music
+background_music_file = "Assets/Sounds/start_screen_music.mp3"
+pygame.mixer.music.load(background_music_file) # Load main game music
 pygame.mixer.music.set_volume(0.2)
 pygame.mixer.music.play(-1) # Loop indefinitely
 
 bg_ambient_music = pygame.mixer.Sound("Assets/Sounds/space_ambient.mp3") # Load ambient sound fx
-bg_ambient_music.play(-1) # Loop indefinitely
 
 
 # --------------------- INITIALIZE OBJECTS ----------------------
@@ -40,9 +40,15 @@ scoreboard = scoreboard_module.ScoreBoard(screen)
 
 alien_manager = alien_manager_module.AlienManager(screen, scoreboard, explosion_manager)
 
+game_interface = game_interface_module.GameInterfaceManager(screen)
+
 
 # ----------------------- GAME STATES ---------------------------
 game_is_running = True
+show_start_screen = True
+play_game = False
+show_game_over_screen =  False
+change_background_music = False
 
 
 # ---------------------- TIME TRACKERS --------------------------
@@ -53,45 +59,105 @@ program_start_time = pygame.time.get_ticks()
 time_since_click = 0
 
 
+# ---------------------- CONTROL FUNCTIONS --------------------------
+def reset_all_objects():
+    global explosion_manager, player, scoreboard, alien_manager
+
+    explosion_manager = explosion_manager_module.ExplosionManager(screen)
+    player = player_module.Player(screen, WIDTH, HEIGHT, explosion_manager)
+    scoreboard = scoreboard_module.ScoreBoard(screen)
+    alien_manager = alien_manager_module.AlienManager(screen, scoreboard, explosion_manager)
+
+
 # ------------------------- MAIN LOOP ---------------------------
 while game_is_running:
     # Game termination condition
-    for event in pygame.event.get():
+    pygame_events = pygame.event.get()
+    for event in pygame_events:
         if event.type == pygame.QUIT:
             game_is_running = False
 
     # Fill entire screen (blue-black background colour)
     screen.fill(SCREEN_BG_COLOUR)
 
-    # Create animated Space background with stars
-    for star in bg_stars:
-        star.move()
-        star.draw(screen)
+    if show_start_screen:
+        command = game_interface.display_start_screen(pygame_events)
 
-    # Fire an energy blast (bullet) when player left clicks
-    if pygame.mouse.get_pressed()[0]:
-        time_since_click = pygame.time.get_ticks() - program_start_time
+        if command == "start_game":
+            show_start_screen = False
+            play_game = True
+            change_background_music = True
+            background_music_file = "Assets/Sounds/bg_music.mp3"
 
-        if time_since_click > 200: # If more than 0.15 seconds have elapsed
-            player.shoot_bullet() # Create an energy blast (bullet) and fire it
-            program_start_time = pygame.time.get_ticks()
+    elif play_game:
+        # Create animated Space background with stars
+        for star in bg_stars:
+            star.move()
+            star.draw(screen)
+
+        # Fire an energy blast (bullet) when player left clicks
+        if pygame.mouse.get_pressed()[0]:
+            time_since_click = pygame.time.get_ticks() - program_start_time
+
+            if time_since_click > 200: # If more than 0.15 seconds have elapsed
+                player.shoot_bullet() # Create an energy blast (bullet) and fire it
+                program_start_time = pygame.time.get_ticks()
 
 
-    # Update player position to follow the mouse pointer
-    player.follow_mouse_pointer()
+        # Update player position to follow the mouse pointer
+        player.follow_mouse_pointer()
 
-    # Animate and move spawned aliens, and remove those that go off-screen
-    alien_manager.update_spawned_aliens(player)
+        # Animate and move spawned aliens, and remove those that go off-screen
+        alien_manager.update_spawned_aliens(player)
 
-    # Update fired bullets and remove those that hit aliens, or go off-screen
-    player.BULLET_MANAGER.update_fired_bullets(alien_manager.alien_list)
+        # Update fired bullets and remove those that hit aliens, or go off-screen
+        player.BULLET_MANAGER.update_fired_bullets(alien_manager.alien_list)
 
-    # Display explosion animations wherever objects collide
-    explosion_manager.update_explosions()
+        # Display explosion animations wherever objects collide
+        explosion_manager.update_explosions()
 
-    # Display Player Score
-    scoreboard.display_score_bottom_left()
+        # Display Player Score
+        scoreboard.display_score_bottom_left()
+
+        # Show game over screen when player has collided
+        if player.has_collided:
+            play_game = False
+            show_game_over_screen = True
+            change_background_music = True
+            background_music_file = "Assets/Sounds/game_over_music.mp3"
+
+
+    elif show_game_over_screen:
+        command = game_interface.display_game_over_screen(scoreboard.score, pygame_events)
+
+        if command == "display_main":
+            show_game_over_screen = False
+            show_start_screen = True
+
+            change_background_music = True
+            background_music_file = "Assets/Sounds/start_screen_music.mp3"
+
+            reset_all_objects()
+
+    else:
+        pass
+
+    # Change background music to match interface being displayed on screen
+    if change_background_music:
+        pygame.mixer.music.stop() # Stop current bg music
+        bg_ambient_music.stop() # Stop additional sound fx if it was playing
+        pygame.mixer.music.load(background_music_file) # Load correct bg music
+        pygame.mixer.music.play(-1) # Loop indefinitely
+
+        # Play additional sound effect if user starts main game
+        if background_music_file == "Assets/Sounds/bg_music.mp3":
+            bg_ambient_music.play(-1)
+
+        change_background_music = False
+
 
     # Refresh the display and set the max frame rate
     pygame.display.flip()
     screen_clock.tick(30)
+
+

@@ -48,6 +48,8 @@ class Player:
 
 
     def follow_mouse_pointer(self):
+        pygame.mouse.set_visible(False)
+
         # Controls looping through animation frames
         self.counter = self.counter % len(self.PLAYER_FRAMES)
 
