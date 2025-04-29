@@ -132,24 +132,31 @@ while game_is_running:
             background_music_file = "Assets/Sounds/game_over_music.mp3"
 
 
+
     elif display_game_over_screen:
-        # Display game over screen and returns any command to switch screen to different interface
-        command = game_interface.display_game_over_screen(scoreboard.score, pygame_events)
+        # Display game over screen and returns commands if the user clicks a button
+        commands = game_interface.display_game_over_screen(scoreboard.score, pygame_events)
 
-        if command == "display_main":
-            # Set necessary flags to display main starting screen for game
-            display_game_over_screen = False
-            display_start_screen = True
+        if commands: # If the user clicked any button
+            if commands[0] == "display_main": # If the return to main menu button was clicked
 
-            change_background_music = True
-            background_music_file = "Assets/Sounds/start_screen_music.mp3"
+                if commands[1]:
+                    scoreboard.upload_score_to_database(commands[1], scoreboard.score)
+                    scoreboard.retrieve_all_player_data()
 
-            # Reset all game objects (Player, aliens, bullets, etc.)
-            reset_all_objects()
+                # Set necessary flags to display main starting screen for game
+                display_game_over_screen = False
+                display_start_screen = True
+
+                change_background_music = True
+                background_music_file = "Assets/Sounds/start_screen_music.mp3"
+
+                # Reset all game objects (Player, aliens, bullets, etc.)
+                reset_all_objects()
 
     elif display_leaderboard_screen:
         # Display leaderboard screen and returns any command to switch screen to different interface
-        command = game_interface.display_leaderboard_screen(pygame_events)
+        command = game_interface.display_leaderboard_screen(pygame_events, scoreboard.get_top_5_players())
 
         if command == "display_main":
             # Set necessary flags to display main starting screen for game
