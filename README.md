@@ -112,3 +112,10 @@ Full credits (names/links) are listed in [CREDITS.md](CREDITS.md).
 
 ## 🙌 Acknowledgments
 To my professors, friends, and the online communities that kept me motivated—thank you!
+
+---
+
+<div align="center">
+   <p> Built with love and Python by [Edward K. Addo Jr](https://github.com/Its-Kirito) </p>
+</div>
+

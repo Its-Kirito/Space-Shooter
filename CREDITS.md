@@ -74,3 +74,8 @@ All music and sounds were sourced from **Pixabay** and are free for non-commerci
 
 -  **Game Over Background Music** \
 Music by <a href="https://pixabay.com/users/lightyeartraxx-26697863/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=135684">Kim Lightyear</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=135684">Pixabay</a>
+
+---
+
+### 👨‍💻 Project Creator
+This game was created by [Edward K. Addo Jr](https://github.com/Its-Kirito) as a personal learning project. All rights to third-party assets remain with their respective creators.
