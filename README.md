@@ -106,7 +106,7 @@ This project uses third-party assets for educational and non-commercial purposes
 - Background Images: Generated using [Google's Gemini AI (2.5 Pro)](https://gemini.google.com/app)
 - Music and sound effects: Sourced from [Pixabay](https://pixabay.com/).
 
-Full credits (names/links) are listed in CREDITS.md.
+Full credits (names/links) are listed in [CREDITS.md](CREDITS.md).
 
 ---
 
