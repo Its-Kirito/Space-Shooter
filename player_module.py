@@ -1,93 +1,109 @@
+"""
+This module defines the Player class, which handles the player-controlled spaceship:
+- Movement following the mouse
+- Shooting bullets using the BulletManager
+- Playing animation and sound effects
+"""
+
 import pygame, bullet_manager_module
 
 
 class Player:
+    # Initialize pygame's mixer
     pygame.mixer.init()
-    ENERGY_BLAST_SOUND = pygame.mixer.Sound("Assets/Sounds/energy_blast.mp3") # Load sound fx
+
+    # Sound effects for shooting and flying
+    ENERGY_BLAST_SOUND = pygame.mixer.Sound("Assets/Sounds/energy_blast.mp3")
     ENERGY_BLAST_SOUND.set_volume(0.2)
 
     SHIP_FLYING_SOUND = pygame.mixer.Sound("Assets/Sounds/spaceship_flying_hum.mp3")
     SHIP_FLYING_SOUND.set_volume(0.2)
 
-    # Size of the player controlled spaceship
+    # Size of spaceship sprite
     SIZE = (120, 120)
 
-
     def __init__(self, screen, screen_width, screen_height, explosion_manager):
-        # Hide the mouse cursor (since the spaceship follows it)
-        pygame.mouse.set_visible(False)
+        """
+        Initialize the player object
 
-        self.has_collided = False
+        :param screen: The screen to draw the player's spaceship on
+        :param screen_width: The width of the screen
+        :param screen_height: The height of the screen
+        :param explosion_manager: Manages explosions when the player collides with an alien.
+        """
+        self.screen = screen
         self.explosion_manager = explosion_manager
+        self.has_collided = False  # Flag for detecting player collision
 
-        self.counter = 0 # Used to cycle through animation frames
-        self.screen = screen # Reference to the game screen
-
-        # Lists to hold spaceship animation frames and their corresponding rects
-        self.PLAYER_FRAMES = []
-        self.RECT = None
-
-        # Create a bullet manager to handle bullets fired by the player
+        # Responsible for creating and firing bullets
         self.BULLET_MANAGER = bullet_manager_module.BulletManager(screen, explosion_manager)
+
+        self.FRAMES = []  # Store animation frames
+        self.RECT = None  # Rect of the player. Used for positioning.
+        self.counter = 0  # Controls cycling through animation frames
 
         # Load and resize spaceship animation frames
         for i in range(0, 5):
-            # Load then resize each spaceship frame
             player = pygame.image.load(f"Assets/Frames/Player/player_f{i}.gif")
-            player = pygame.transform.scale(player, Player.SIZE)
+            player = pygame.transform.scale(player, Player.SIZE)  # Resize the frame
 
-            # Add frame and rect to respective lists
-            self.PLAYER_FRAMES.append(player)
+            self.FRAMES.append(player)
 
-        self.RECT = self.PLAYER_FRAMES[0].get_rect()
+        self.RECT = self.FRAMES[0].get_rect()
         self.RECT.center = (screen_width / 2, screen_height - self.RECT.height)
 
-        # Creates the humming sound for spaceship if it's still alive
+        # Play humming sound for spaceship if it's still alive
         if not self.has_collided:
             Player.SHIP_FLYING_SOUND.play(-1)
 
 
     def follow_mouse_pointer(self):
+        """
+        Makes the spaceship follow the mouse pointer without moving off-screen.
+        Handles player spaceship animation and movements.
+        """
+
+        # Hide the mouse cursor
         pygame.mouse.set_visible(False)
 
-        # Controls looping through animation frames
-        self.counter = self.counter % len(self.PLAYER_FRAMES)
+        if self.has_collided:
+            # Skip redrawing the spaceship
+            return
+
+        # Cycle animation frame index
+        self.counter = self.counter % len(self.FRAMES)
 
         # Get the current mouse coordinates
         mouse_pos = pygame.mouse.get_pos()
         mouse_x = mouse_pos[0]
         mouse_y = mouse_pos[1]
 
-        # Get current spaceship rect
-        player_rec = self.RECT
 
-        if self.has_collided:
-            # Don't redraw the spaceship again
-            return None
-        else:
-            # Prevent ship from moving beyond screen edges (leave the game screen)
-            if mouse_x <= player_rec.width // 2:
-                mouse_x = player_rec.width // 2 # Farthest left the ship can go
+        # Prevent ship from moving beyond screen edges (leave the game screen)
+        if mouse_x <= self.RECT.width // 2:
+            mouse_x = self.RECT.width // 2  # Farthest left the ship can go
 
-            elif mouse_x >= self.screen.get_width() - player_rec.width // 2:
-                mouse_x = self.screen.get_width() - player_rec.width // 2 # Farthest right the ship can go
+        elif mouse_x >= self.screen.get_width() - self.RECT.width // 2:
+            mouse_x = self.screen.get_width() - self.RECT.width // 2  # Farthest right the ship can go
 
-            if mouse_y <= player_rec.height // 2:
-                mouse_y = player_rec.height // 2 # Farthest up the ship can go
+        if mouse_y <= self.RECT.height // 2:
+            mouse_y = self.RECT.height // 2  # Farthest up the ship can go
 
-            elif mouse_y >= self.screen.get_height() - player_rec.height // 2:
-                mouse_y = self.screen.get_height() - player_rec.height // 2 # Farthest down the ship can go
+        elif mouse_y >= self.screen.get_height() - self.RECT.height // 2:
+            mouse_y = self.screen.get_height() - self.RECT.height // 2  # Farthest down the ship can go
 
+        # Update spaceship position to follow mouse pointer and draw current frame
+        self.RECT.center = (mouse_x, mouse_y)
+        self.screen.blit(self.FRAMES[self.counter], self.RECT)
 
-            # Update spaceship position to follow mouse pointer
-            player_rec.center = (mouse_x, mouse_y)
-
-            # Draw current animation frame at new position
-            self.screen.blit(self.PLAYER_FRAMES[self.counter], player_rec)
-            self.counter += 1
+        # Move to next animation frame
+        self.counter += 1
 
 
     def shoot_bullet(self):
+        """
+        Fires a bullet from the current mouse position and plays a sound effect.
+        """
         # Get current mouse position
         mouse_pos = pygame.mouse.get_pos()
         mouse_x = mouse_pos[0]
@@ -95,7 +111,4 @@ class Player:
 
         # Create and fire a bullet using the bullet manager
         self.BULLET_MANAGER.add_bullet(mouse_x, mouse_y)
-
-        # Play sound of Energy Blast
-        self.ENERGY_BLAST_SOUND.play()
-
+        self.ENERGY_BLAST_SOUND.play() # Boom! lol
