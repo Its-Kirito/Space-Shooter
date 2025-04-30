@@ -174,6 +174,7 @@ class GameInterfaceManager:
         main_menu_button.display_button(self.screen, events)
 
         if main_menu_button.is_pressed:
+            self.user_input = ""
             return ["display_main", self.user_input]
 
         # Return None if no state change occurred.

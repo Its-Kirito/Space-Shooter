@@ -24,6 +24,8 @@ SCREEN_BG_COLOUR = (0, 0, 20)
 # ------------------------ SETUP DISPLAY ------------------------
 screen = pygame.display.set_mode(SCREEN_SIZE)
 pygame.display.set_caption("Space Shooter")
+icon = pygame.image.load("Assets/Frames/Player/player_f0.gif")
+pygame.display.set_icon(icon)
 screen_clock = pygame.time.Clock()  # Controls frame rate
 
 
@@ -168,8 +170,8 @@ while game_is_running:
             if commands[0] == "display_main": # If the return to main menu button was clicked
 
                 if commands[1]: # Check if the user entered a username before clicking Main Menu
-                    # Requests to database take a few seconds so please be patient after button click!!
                     # Upload the player's score with their entered username to the database.
+                    # Requests to database take a few seconds so please be patient after button click!!
                     scoreboard.upload_score_to_database(commands[1], scoreboard.score)
 
                     # Retrieve the updated list of all player data (including the new score)

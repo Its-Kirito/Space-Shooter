@@ -95,12 +95,10 @@ class ScoreBoard:
         try:
             # Send a GET request to fetch the latest data from the JSON bin.
             response = requests.get(GET_URL)
-            print(response.status_code)
             response.raise_for_status() # Raise an HTTPError for bad responses
 
             json_data = response.json()
             all_player_data = json_data['record']
-            print(all_player_data)
 
             return all_player_data
         except requests.exceptions.RequestException as e:
