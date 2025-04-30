@@ -115,7 +115,5 @@ To my professors, friends, and the online communities that kept me motivated—t
 
 ---
 
-<div align="center">
-   <p> Built with love and Python by [Edward K. Addo Jr](https://github.com/Its-Kirito) </p>
-</div>
+Built with love and Python by [Edward Addo Jr](https://github.com/Its-Kirito)
 
