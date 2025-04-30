@@ -45,6 +45,8 @@ player = player_module.Player(screen, WIDTH, HEIGHT, explosion_manager)
 # Create a list of Star objects for the space background effect
 bg_stars = [space_bg_module.Star() for _ in range(150)]
 
+# Create an instance of the ScoreBoard.
+# Because of HTTPS requests to database, wait for a few seconds after clicking a button for request processing
 scoreboard = scoreboard_module.ScoreBoard(screen)
 
 alien_manager = alien_manager_module.AlienManager(screen, scoreboard, explosion_manager)
@@ -166,7 +168,8 @@ while game_is_running:
             if commands[0] == "display_main": # If the return to main menu button was clicked
 
                 if commands[1]: # Check if the user entered a username before clicking Main Menu
-                    # Upload the player's score with their entered username to the database
+                    # Requests to database take a few seconds so please be patient after button click!!
+                    # Upload the player's score with their entered username to the database.
                     scoreboard.upload_score_to_database(commands[1], scoreboard.score)
 
                     # Retrieve the updated list of all player data (including the new score)

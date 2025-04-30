@@ -93,17 +93,29 @@ class GameInterfaceManager:
 
         # Display top 5 highest players on screen
         counter = 0 # Index to track which y-coordinate to use.
-        for person in top_5:
-            position = (210, leaderboard_y_coordinates[counter])
 
-            message = f"{person["name"]}: {person["score"]} points"
+        # Check if top_5 data was successfully retrieved
+        if top_5:
+            # If it was. Display each player's details
+            for person in top_5:
+                position = (210, leaderboard_y_coordinates[counter])
+
+                message = f"{person["name"]}: {person["score"]} points"
+
+                # Create a PygameText object to render the player data message.
+                player_data = PygameText(message, position, FONT, align_with_center=False)
+                player_data.display_text(self.screen)
+
+                # Move to the next y-coordinate for the next player.
+                counter += 1
+        else:
+            # Otherwise, display error message
+            position = (210, leaderboard_y_coordinates[0])
+            message = "Error loading leaderboard"
 
             # Create a PygameText object to render the player data message.
-            player_data = PygameText(message, position, FONT, align_with_center=False)
-            player_data.display_text(self.screen)
-
-            # Move to the next y-coordinate for the next player.
-            counter += 1
+            error_msg = PygameText(message, position, FONT, align_with_center=False)
+            error_msg.display_text(self.screen)
 
         if main_menu_button.is_pressed:
             return "display_main" # Command to display main menu
