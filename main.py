@@ -176,7 +176,7 @@ while game_is_running:
 
                     # Retrieve the updated list of all player data (including the new score)
                     # This is done here so the leaderboard will have the new score if accessed next.
-                    scoreboard.retrieve_all_player_data()
+                    scoreboard.all_player_data = scoreboard.retrieve_all_player_data()
 
                 # Set necessary flags to transition back to the main starting screen
                 display_game_over_screen = False
