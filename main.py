@@ -168,14 +168,13 @@ while game_is_running:
         # Check if any commands were returned (i.e., a button was clicked)
         if commands:
             if commands[0] == "display_main": # If the return to main menu button was clicked
-
                 if commands[1]: # Check if the user entered a username before clicking Main Menu
                     # Upload the player's score with their entered username to the database.
                     # Requests to database take a few seconds so please be patient after button click!!
                     scoreboard.upload_score_to_database(commands[1], scoreboard.score)
 
-                    # Retrieve the updated list of all player data (including the new score)
-                    # This is done here so the leaderboard will have the new score if accessed next.
+                    # # Retrieve the updated list of all player data (including the new score)
+                    # # This is done here so the leaderboard will have the new score if accessed next.
                     scoreboard.all_player_data = scoreboard.retrieve_all_player_data()
 
                 # Set necessary flags to transition back to the main starting screen

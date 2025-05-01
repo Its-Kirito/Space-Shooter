@@ -162,7 +162,7 @@ class GameInterfaceManager:
                 if event.key == pygame.K_BACKSPACE:
                     self.user_input = self.user_input[:-1]
                 else:
-                    if len(self.user_input) < 15:
+                    if len(self.user_input) <= 15: # Max of 15 characters
                         self.user_input += event.unicode
 
         # Render what the user typed so it can de displayed on screen
@@ -174,8 +174,9 @@ class GameInterfaceManager:
         main_menu_button.display_button(self.screen, events)
 
         if main_menu_button.is_pressed:
+            commands = ["display_main", self.user_input]
             self.user_input = ""
-            return ["display_main", self.user_input]
+            return commands
 
         # Return None if no state change occurred.
         return None

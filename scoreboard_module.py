@@ -122,6 +122,8 @@ class ScoreBoard:
             # Send a PUT request to update the entire JSON bin with the new, sorted data.
             response = requests.put(UPLOAD_URL, json=self.all_player_data)
             response.raise_for_status()  # Raise an HTTPError for bad responses
+            print("Data successsfully logged")
+
         except requests.exceptions.RequestException as e:
             print(f"Error uploading data: {e}")
 
